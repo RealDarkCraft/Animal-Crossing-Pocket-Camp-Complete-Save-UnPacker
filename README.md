@@ -13,3 +13,21 @@ If you want an actual save editor you can try this one : https://github.com/MySh
 Credits :
 
     @Thulinma : Original decryption key/algorithm
+
+Information about the tool :
+
+    1 : Acpcc folder contain flatbuffer generated binary (the tool can generate new binaries (based on table.txt) by uncomment the line "self.Build(tablename, namescape)" in the "deserialize" function
+
+
+
+    2 : table.txt contain data type definition. there was some type possible like :
+
+        Normal Types : (int, string, byte, bool...)
+
+        Normal List Types ("list-{type}" in table.txt) : list of types like (int, string, byte, bool...)
+
+        subEntries data ("vectorn-{VectorName}" in table.txt) : sub element (like json)
+
+        list of subEntries data ("vector-{VectorName}" in table.txt) : list of sub element (like list of json)
+    
+    the structure was : {KeyBaseName : {"tableData"|rootTableDef: [{"name":..., "type":...}, ...], "vector": [{"vectorName":..., "vectorData": [{"name":..., "type":...}, ...]}, ...]}, ...}
