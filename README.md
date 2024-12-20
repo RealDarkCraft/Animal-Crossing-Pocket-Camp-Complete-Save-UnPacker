@@ -18,7 +18,7 @@ Information about the tool :
 
     1 : Acpcc folder contain flatbuffer generated binary 
 
-    2 : If you have error about he cant find module (not the flatbuffer import error) and exit 84 result code, try the restore command
+    2 : If you have error about he cant find module (not the flatbuffer import error) and/or exit 84 result code, try the restore command
 
     2 : table.txt contain data type definition. there was some type possible like :
 
