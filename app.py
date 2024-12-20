@@ -115,13 +115,14 @@ class Extractor:
                         fullsave[i['name']] = des_json
                         json.dump(des_json, f, ensure_ascii = False, indent = 4)
                     except Exception as e:
+                        print(f"Error extracting {i['name']}\n{e}\n")
+                        exit(84) # Remove this line if your save have table def that wasent in table.txt
                         error = True
             else:
                 with open(fr"{outputfolder}/{i['name']}", "wb") as f:
                     self.seek(i["offset"])
                     f.write(self.read(i["size"]))
             if error == True:
-                print("Error")
                 with open(fr"{outputfolder}/{i['name']}", "wb") as f:
                     self.seek(i["offset"])
                     f.write(self.read(i["size"]))
@@ -190,8 +191,8 @@ class Serialization:
             else:
                 data += f"  {i['name']}: {i['type']};\n"
         data += "}\n\n"
-        open("test.fbs","w").write(data)
-        subprocess.call(["flatc", "--python", "test.fbs"])
+        open("temp.fbs","w").write(data)
+        subprocess.call(["flatc", "--python", "temp.fbs"])
     
     def deserializeVectorList(self, key, base_module, json_1, namescape):
         for vec in json_1["vector"]:
@@ -265,7 +266,6 @@ class Serialization:
         
         if self.table.get(tablename) != None:
             json_1 = self.table[tablename]
-            #self.Build(tablename, namescape)
             result = {} 
             table_import = importlib.import_module(f"{namescape}.{tablename}")
             table_get = getattr(getattr(table_import, tablename),"GetRootAs")(self.buf, 0)
@@ -279,7 +279,7 @@ class Serialization:
                 elif "-" in i["type"] and i["type"].split("-")[0] == "list":
                     result[i["name"]] = self.deserializeList(i, table_get, json_1, namescape)  
                 else:
-                    result[i["name"]] = getattr(table_get, i["name"][0].upper()+i["name"][1:])()
+                    result[i["name"]] = getattr(table_get, self.UpperString(i["name"]))()
                     if i["type"] == "string":
                         if result[i["name"]] != None:
                             result[i["name"]] = result[i["name"]].decode()
@@ -289,7 +289,11 @@ class Serialization:
         return None
     
     def UpperString(self, string):
-        return string[0].upper()+string[1:]        
+        new_string = ""
+        a = string.split("_")
+        for i in a:
+            new_string += i[0].upper()+i[1:] 
+        return new_string 
     
     def serializeVector(self, json_data, key, base_module, json_1, namescape):
         for vec in json_1["vector"]:
@@ -424,62 +428,75 @@ if __name__ == "__main__":
         try:
             a = Serialization()
                 
-            q = input("0 : Extract | 1 : Repack | q : quit\n")
+            q = input("0 : Extract | 1 : Repack | q : quit | restore : (generate flatbuffer bin files)\n")
             if (q == "q"):
                 exit(0)
-            q = int(q)
-            if (q == 0):
-                while True:
-                    filename = input("Input file : ")
-                    try:
-                        filename = filename.replace("\\","/")
-                        open(filename, "rb")
-                        break
-                    except:
-                        print("Bad path")
-                while True:
-                    outputfolder = input("Output folder : ")
-                    try:
-                        outputfolder = outputfolder.replace("\\","/")
-                        os.makedirs(outputfolder, exist_ok = True)
-                        empty_verify = os.listdir(outputfolder)
-                        if empty_verify == []:
-                            break
-                        else:
-                            print("The output folder need to be empty")
-                    except:
-                        print("Bad path")
-                print("\n")
-                data = open(filename,"rb").read()
-                data = Decryptor().Shift(data, outputfolder)
-                Extractor(a).Extract(data, outputfolder)
-                print("\n")
-            
-            elif (q == 1):
-                while True:
-                    inputfolder = input("Input folder : ")
-                    try:
-                        inputfolder = inputfolder.replace("\\","/")
-                        if os.path.exists(inputfolder):
-                            break
-                    except:
-                        print("Bad path")
-                while True:
-                    outputfile = input("Output File : ")
-                    try:
-                        outputfile = outputfile.replace("\\","/")
-                        open(outputfile, "wb")
-                        break
-                    except:
-                        print("Bad path\n")
-                print("\n")
-                data = Extractor(a).Repack(inputfolder)
-                data = Decryptor().Shift(data, inputfolder)
-                open(outputfile, "wb").write(data)
-                print("\n")
+            elif (q == "restore"):
+                temp = open("restore_data.txt").read().split("\n")
+                templenght = len(temp)
+                percentage = 0
+                for i in temp:
+                    percentage += 1
+                    if (percentage%20 == 0):
+                        print(fr"{((100/templenght) * percentage):.2f}%", end = "\r")
+                    if (i != ""):
+                        a.Build(i, "Acpcc")
+                print("100.00%")
             else:
-                print("Unknown mode\n")
+                q = int(q)
+                if (q == 0):
+                    while True:
+                        filename = input("Input file : ")
+                        try:
+                            filename = filename.replace("\\","/")
+                            open(filename, "rb")
+                            break
+                        except:
+                            print("Bad path")
+                    while True:
+                        outputfolder = input("Output folder : ")
+                        try:
+                            outputfolder = outputfolder.replace("\\","/")
+                            os.makedirs(outputfolder, exist_ok = True)
+                            empty_verify = os.listdir(outputfolder)
+                            if empty_verify == []:
+                                break
+                            else:
+                                print("The output folder need to be empty")
+                        except:
+                            print("Bad path")
+                    print("\n")
+                    data = open(filename,"rb").read()
+                    data = Decryptor().Shift(data, outputfolder)
+                    Extractor(a).Extract(data, outputfolder)
+                    print("\n")
+                
+                elif (q == 1):
+                    while True:
+                        inputfolder = input("Input folder : ")
+                        try:
+                            inputfolder = inputfolder.replace("\\","/")
+                            if os.path.exists(inputfolder):
+                                break
+                        except:
+                            print("Bad path")
+                    while True:
+                        outputfile = input("Output File : ")
+                        try:
+                            outputfile = outputfile.replace("\\","/")
+                            open(outputfile, "wb")
+                            break
+                        except:
+                            print("Bad path\n")
+                    print("\n")
+                    data = Extractor(a).Repack(inputfolder)
+                    data = Decryptor().Shift(data, inputfolder)
+                    open(outputfile, "wb").write(data)
+                    print("\n")
+                else:
+                    print("Unknown mode\n")
         except ValueError:
             print("Unknown mode\n")
         except Exception as e:
+            raise e
             print(e)
