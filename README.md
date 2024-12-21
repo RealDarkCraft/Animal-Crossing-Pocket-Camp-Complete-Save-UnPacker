@@ -1,6 +1,8 @@
 # Animal-Crossing-Pocket-Camp-Complete-Save-Unpacker
 Unpack/deserialize and serialize/repack Animal Crossing Pocket Camp Complete saves
 
+You should always make saves backup (even with vanilla saves though)
+
 This tool allow you to unpack Animal-Crossing-Pocket-Camp-Complete saves and repack it
 Files which his name start with "__" are raw data and can be directly edited
 Files that was json are deserialized files and can be edited
