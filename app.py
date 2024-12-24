@@ -468,7 +468,14 @@ if __name__ == "__main__":
                     print("\n")
                     data = open(filename,"rb").read()
                     data = Decryptor().Shift(data, outputfolder)
-                    Extractor(a).Extract(data, outputfolder)
+                    target_hash = data[4:68]
+                    hashs = hashlib.sha256(data[68:]).hexdigest().encode()
+                    if target_hash == hashs:
+                        Extractor(a).Extract(data, outputfolder)
+                    else:
+                        print("Invalide decrypted hashs. Aborting\n")
+                        time.sleep(0.1)
+                        exit(84)
                     print("\n")
                 
                 elif (q == 1):
