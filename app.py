@@ -372,6 +372,10 @@ class Serialization:
         for s in reversed(list_data):
             if (key["type"].split("-")[1] == "string"):
                 self.builder.PrependUOffsetTRelative(s)
+            elif (key["type"].split("-")[1] == "short"):
+                self.builder.PrependInt16(s)
+            elif (key["type"].split("-")[1] == "ushort"):
+                self.builder.PrependUint16(s)
             elif (key["type"].split("-")[1] == "uint"):
                 self.builder.PrependUint32(s)
             elif (key["type"].split("-")[1] == "int"):
