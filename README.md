@@ -6,9 +6,9 @@ You should always make saves backup (even with vanilla saves though)
 This tool allow you to unpack Animal-Crossing-Pocket-Camp-Complete saves and repack it
 Files where his filename start with "__" are raw data and can be edited without deserialization
 
-Json files are likely deserialized by the tool, so you can edit them
+Json files are likely deserialized files, so you can edit them
 
-Binary files are likely file program couldn't deserialize, so you shouldn't edit them if you dont know what's you'r doing.
+Binary files are likely serialized files so you shouldn't edit them if you dont know what's you'r doing.
 
 This is not a save editor, so the tool will not verify if data you edited is correct. (For example, in some cases, modifying certain values without modifying other specific values could cause crashes.)
 
