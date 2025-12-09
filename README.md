@@ -4,11 +4,13 @@ Unpack/deserialize and serialize/repack Animal Crossing Pocket Camp Complete sav
 You should always make saves backup (even with vanilla saves though)
 
 This tool allow you to unpack Animal-Crossing-Pocket-Camp-Complete saves and repack it
-Files which his name start with "__" are raw data and can be directly edited
-Files that was json are deserialized files and can be edited
-If a file was a binary file you should dont edit it if you dont know what you do
+Files where his filename start with "__" are raw data and can be edited without deserialization
 
-This is not a save editor, so the tool will not verify if the data you edited was correct and wont corrupt you file (Even if iirc if you made bad change the tool could throw error when re-serialize)
+Json files are likely deserialized by the tool, so you can modify them
+
+Binary files are likely file program couldn't deserialize, so you shouldn't edit them if you dont know what's you'r doing.
+
+This is not a save editor, so the tool will not verify if the data you edited is correct. (For example, in some cases, modifying certain values without modifying other specific values could cause crashes.)
 
 If you want an actual save editor you can try this one : https://github.com/MyShiLingStar/PCCE
 
