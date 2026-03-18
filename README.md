@@ -1,37 +1,63 @@
-# Animal-Crossing-Pocket-Camp-Complete-Save-Unpacker
-Unpack/deserialize and serialize/repack Animal Crossing Pocket Camp Complete saves
+# Animal-Crossing-Pocket-Camp-Complete Save Unpacker
 
-You should always make saves backup (even with vanilla saves though)
+Unpack/deserialize and repack/serialize Animal Crossing Pocket Camp Complete save files.
 
-This tool allow you to unpack Animal-Crossing-Pocket-Camp-Complete saves and repack it
-Files where his filename start with "__" are raw data and can be edited without deserialization
+> ⚠️ **Always back up your saves before using this tool** — even unmodified ones.
 
-Json files are likely deserialized files, so you can edit them
+---
 
-Binary files are likely serialized files so you shouldn't edit them if you dont know what's you'r doing.
+## Overview
 
-This is not a save editor, so the tool will not verify if data you edited is correct. (For example, in some cases, modifying certain values without modifying other specific values could cause crashes.)
+This tool lets you unpack ACPCC save files into editable formats, and repack them afterward.
 
-If you want an actual save editor you can try this one : https://github.com/MyShiLingStar/PCCE
+- Files prefixed with `__` are **raw data** and can be edited directly without deserialization.
+- `.json` files are **deserialized** — safe to edit.
+- Binary files are **serialized** — do not edit unless you know exactly what you're doing.
 
-Credits :
+> 🛑 **This is not a save editor.** The tool does not validate your changes. For example, modifying certain values without updating related fields can cause crashes.
 
-    @Thulinma : Original decryption key/algorithm
+If you want a proper save editor, check out: [PCCE by MyShiLingStar](https://github.com/MyShiLingStar/PCCE)
 
-Information about the tool :
+---
 
-    1 : Acpcc folder contain flatbuffer generated binary 
+## Credits
 
-    2 : If you have error about he cant find module (not the flatbuffer import error) and/or exit 84 result code, try the restore command
+- **@Thulinma** — Original decryption key and algorithm
 
-    2 : table.txt contain data type definition. there was some type possible like :
+---
 
-        Normal Types : (int, string, byte, bool...)
+## Technical Notes
 
-        Normal List Types ("list-{type}" in table.txt) : list of types like (int, string, byte, bool...)
+### General
 
-        subEntries data ("vectorn-{VectorName}" in table.txt) : sub element (like json)
+- The `acpcc/` folder contains FlatBuffer-generated binaries.
+- If you get a "module not found" error (not the FlatBuffer import error) or an exit code `84`, run the **restore** command.
 
-        list of subEntries data ("vector-{VectorName}" in table.txt) : list of sub element (like list of json)
-    
-    the structure was : {KeyBaseName : {"tableData"|rootTableDef: [{"name":..., "type":...}, ...], "vector": [{"vectorName":..., "vectorData": [{"name":..., "type":...}, ...]}, ...]}, ...}
+### table.txt — Data Type Definitions
+
+`table.txt` defines the data types used in the save files. The supported types are:
+
+- **Normal types** — `int`, `string`, `byte`, `bool`, etc.
+- **Normal list types** (`list-{type}`) — lists of normal types, e.g. `list-int`, `list-string`
+- **Sub-entry data** (`vectorn-{VectorName}`) — a single sub-element (similar to a JSON object)
+- **List of sub-entries** (`vector-{VectorName}`) — a list of sub-elements (similar to a JSON array)
+
+### Schema Structure
+
+```json
+{
+  "KeyBaseName": {
+    "tableData": [
+      { "name": "...", "type": "..." }
+    ],
+    "vector": [
+      {
+        "vectorName": "...",
+        "vectorData": [
+          { "name": "...", "type": "..." }
+        ]
+      }
+    ]
+  }
+}
+```
